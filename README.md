@@ -1,6 +1,11 @@
-# Activate Window By Title
+# Resize windows by title
 
-This is a GNOME Shell extension to activate (focus, bring to the foreground) a window
+Origin extension was developed by [Lucas Werkmeister](https://github.com/lucaswerkmeister)
+to [activate a window by title](https://github.com/lucaswerkmeister/activate-window-by-title) from the commandline (via D-Bus).
+
+~~~
+
+This is a GNOME Shell extension to resize (focus, bring to the foreground) a window
 based on its title (or `WM_CLASS`, see below).
 It exposes a D-Bus interface with methods for this purpose;
 it has no user interface of its own,
@@ -8,16 +13,16 @@ but can be called from the command line or other programs.
 
 ## D-Bus usage
 
-The extension, when activated, extends the `org.gnome.Shell` service on the session bus
-with a `/de/lucaswerkmeister/ActivateWindowByTitle` object,
-which implements the `de.lucaswerkmeister.ActivateWindowByTitle` interface containing the following methods:
+The extension, when resized, extends the `org.gnome.Shell` service on the session bus
+with a `/de/jerolimov/ResizeWindowByTitle` object,
+which implements the `de.jerolimov.ResizeWindowByTitle` interface containing the following methods:
 
-- **activateByTitle**, to activate the window with the given full, exact title
-- **activateByPrefix**, to activate the window whose title starts with the given prefix
-- **activateBySuffix**, to activate the window whose title ends with the given suffix
-- **activateBySubstring**, to activate the window whose title contains the given string
-- **activateByWmClass**, to activate the window with the given full, exact name part of its `WM_CLASS`
-- **activateByWmClassInstance**, to activate the window with the given full, exact instance part of its `WM_CLASS`
+- **resizeByTitle**, to resize the window with the given full, exact title
+- **resizeByPrefix**, to resize the window whose title starts with the given prefix
+- **resizeBySuffix**, to resize the window whose title ends with the given suffix
+- **resizeBySubstring**, to resize the window whose title contains the given string
+- **resizeByWmClass**, to resize the window with the given full, exact name part of its `WM_CLASS`
+- **resizeByWmClassInstance**, to resize the window with the given full, exact instance part of its `WM_CLASS`
 
 Each method takes a single string argument,
 and returns a single boolean indicating whether such a window was found or not.
@@ -44,18 +49,26 @@ You can call these methods using your favorite D-Bus command line tool, for exam
 ```sh
 busctl --user call \
     org.gnome.Shell \
-    /de/lucaswerkmeister/ActivateWindowByTitle \
-    de.lucaswerkmeister.ActivateWindowByTitle \
-    activateBySubstring \
-    s 'Firefox'
+    /de/jerolimov/ResizeWindowByTitle \
+    de.jerolimov.ResizeWindowByTitle \
+    resizeBySubstring \
+    s 'Firefox' \
+    i 100 \
+    i 100 \
+    i 1920 \
+    i 1080
 ```
 
 ```sh
 gdbus call --session \
     --dest org.gnome.Shell \
-    --object-path /de/lucaswerkmeister/ActivateWindowByTitle \
-    --method de.lucaswerkmeister.ActivateWindowByTitle.activateBySubstring \
-    'Firefox'
+    --object-path /de/jerolimov/ResizeWindowByTitle \
+    --method de.jerolimov.ResizeWindowByTitle.resizeBySubstring \
+    'Firefox' \
+    100 \
+    100 \
+    1920 \
+    1080
 ```
 
 ## License

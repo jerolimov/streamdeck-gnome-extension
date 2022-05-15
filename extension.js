@@ -1,6 +1,4 @@
-/* extension.js
- *
- * This program is free software: you can redistribute it and/or modify
+/* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
@@ -12,56 +10,78 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
 /* exported init */
 
 const { Gio } = imports.gi;
 
-const ActivateWindowByTitleInterface = `
+const ResizeWindowByTitleInterface = `
 <node>
-  <interface name="de.lucaswerkmeister.ActivateWindowByTitle">
-    <method name="activateByTitle">
+  <interface name="de.jerolimov.ResizeWindowByTitle">
+    <method name="resizeByTitle">
       <arg name="fullTitle" type="s" direction="in" />
+      <arg name="posX" type="i" direction="in" />
+      <arg name="posY" type="i" direction="in" />
+      <arg name="width" type="i" direction="in" />
+      <arg name="height" type="i" direction="in" />
       <arg name="found" type="b" direction="out" />
     </method>
-    <method name="activateByPrefix">
+    <method name="resizeByPrefix">
       <arg name="prefix" type="s" direction="in" />
+      <arg name="posX" type="i" direction="in" />
+      <arg name="posY" type="i" direction="in" />
+      <arg name="width" type="i" direction="in" />
+      <arg name="height" type="i" direction="in" />
       <arg name="found" type="b" direction="out" />
     </method>
-    <method name="activateBySuffix">
+    <method name="resizeBySuffix">
       <arg name="suffix" type="s" direction="in" />
+      <arg name="posX" type="i" direction="in" />
+      <arg name="posY" type="i" direction="in" />
+      <arg name="width" type="i" direction="in" />
+      <arg name="height" type="i" direction="in" />
       <arg name="found" type="b" direction="out" />
     </method>
-    <method name="activateBySubstring">
+    <method name="resizeBySubstring">
       <arg name="substring" type="s" direction="in" />
+      <arg name="posX" type="i" direction="in" />
+      <arg name="posY" type="i" direction="in" />
+      <arg name="width" type="i" direction="in" />
+      <arg name="height" type="i" direction="in" />
       <arg name="found" type="b" direction="out" />
     </method>
-    <method name="activateByWmClass">
+    <method name="resizeByWmClass">
       <arg name="name" type="s" direction="in" />
+      <arg name="posX" type="i" direction="in" />
+      <arg name="posY" type="i" direction="in" />
+      <arg name="width" type="i" direction="in" />
+      <arg name="height" type="i" direction="in" />
       <arg name="found" type="b" direction="out" />
     </method>
-    <method name="activateByWmClassInstance">
+    <method name="resizeByWmClassInstance">
       <arg name="instance" type="s" direction="in" />
+      <arg name="posX" type="i" direction="in" />
+      <arg name="posY" type="i" direction="in" />
+      <arg name="width" type="i" direction="in" />
+      <arg name="height" type="i" direction="in" />
       <arg name="found" type="b" direction="out" />
     </method>
   </interface>
 </node>
 `;
 
-class ActivateWindowByTitle {
+class ResizeWindowByTitle {
     #dbus;
 
     enable() {
         this.#dbus = Gio.DBusExportedObject.wrapJSObject(
-            ActivateWindowByTitleInterface,
+            ResizeWindowByTitleInterface,
             this,
         );
         this.#dbus.export(
             Gio.DBus.session,
-            '/de/lucaswerkmeister/ActivateWindowByTitle',
+            '/de/jerolimov/ResizeWindowByTitle',
         );
     }
 
@@ -72,63 +92,70 @@ class ActivateWindowByTitle {
         this.#dbus = undefined;
     }
 
-    #activateByPredicate(predicate) {
+    #resizeByPredicate(predicate, posX, posY, width, height) {
         for (const actor of global.get_window_actors()) {
             const window = actor.get_meta_window();
             if (predicate(window)) {
-                window.activate(global.get_current_time());
+                window.move_resize_frame(false, posX, posY, width, height);
                 return true;
             }
         }
         return false;
     }
 
-    #activateByTitlePredicate(predicate) {
-        return this.#activateByPredicate(
+    #resizeByTitlePredicate(predicate, posX, posY, width, height) {
+        return this.#resizeByPredicate(
             (window) => predicate(window.get_title()),
+            posX, posY, width, height
         );
     }
 
-    activateByTitle(fullTitle) {
-        return this.#activateByTitlePredicate(
+    resizeByTitle(fullTitle, posX, posY, width, height) {
+        return this.#resizeByTitlePredicate(
             (title) => title === fullTitle,
+            posX, posY, width, height
         );
     }
 
-    activateByPrefix(prefix) {
-        return this.#activateByTitlePredicate(
+    resizeByPrefix(prefix, posX, posY, width, height) {
+        return this.#resizeByTitlePredicate(
             (title) => title.startsWith(prefix),
+            posX, posY, width, height
         );
     }
 
-    activateBySuffix(suffix) {
-        return this.#activateByTitlePredicate(
+    resizeBySuffix(suffix, posX, posY, width, height) {
+        return this.#resizeByTitlePredicate(
             (title) => title.endsWith(suffix),
+            posX, posY, width, height
         );
     }
 
-    activateBySubstring(substring) {
-        return this.#activateByTitlePredicate(
+    resizeBySubstring(substring, posX, posY, width, height) {
+        return this.#resizeByTitlePredicate(
             (title) => title.includes(substring),
+            posX, posY, width, height
         );
     }
 
-    // note: we don’t offer activateByRegExp,
+    // note: we don’t offer resizeByRegExp,
     // because that would be vulnerable to ReDoS attacks
 
-    activateByWmClass(name) {
-        return this.#activateByPredicate(
+    resizeByWmClass(name, posX, posY, width, height) {
+        return this.#resizeByPredicate(
             (window) => window.get_wm_class() === name,
+            posX, posY, width, height
         );
     }
 
-    activateByWmClassInstance(instance) {
-        return this.#activateByPredicate(
+    resizeByWmClassInstance(instance, posX, posY, width, height) {
+        return this.#resizeByPredicate(
             (window) => window.get_wm_class_instance() === instance,
+            posX, posY, width, height
         );
     }
 }
 
 function init() {
-    return new ActivateWindowByTitle();
+    return new ResizeWindowByTitle();
 }

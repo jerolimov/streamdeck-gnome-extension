@@ -1,10 +1,10 @@
 {
-  "uuid": "activate-window-by-title@lucaswerkmeister.de",
-  "name": "Activate Window By Title",
+  "uuid": "streamdeck-gnome-extension@jerolimov.de",
+  "name": "Stream Deck Gnome Extension",
   "description": "Expose a D-Bus interface to activate a window by its title or WM_CLASS",
   "version": 2,
   "shell-version": [
     "42"
   ],
-  "url": "https://github.com/lucaswerkmeister/activate-window-by-title"
+  "url": "https://github.com/jerolimov/streamdeck-gnome-extension"
 }
