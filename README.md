@@ -1,4 +1,4 @@
-# Resize windows
+# 🚧 WIP Resize windows 🚧
 
 Origin extension was developed by [Lucas Werkmeister](https://github.com/lucaswerkmeister)
 to [activate a window by title](https://github.com/lucaswerkmeister/activate-window-by-title) from the commandline (via D-Bus).
@@ -13,7 +13,7 @@ but can be called from the command line or other programs.
 
 ## D-Bus usage
 
-The extension, when resized, extends the `org.gnome.Shell` service on the session bus
+The extension extends the `org.gnome.Shell` service on the session bus
 with a `/de/jerolimov/ResizeWindow` object,
 which implements the `de.jerolimov.ResizeWindow` interface containing the following methods:
 
@@ -25,7 +25,7 @@ which implements the `de.jerolimov.ResizeWindow` interface containing the follow
 - **resizeByWmClass**, to resize the window with the given full, exact name part of its `WM_CLASS`
 - **resizeByWmClassInstance**, to resize the window with the given full, exact instance part of its `WM_CLASS`
 
-Each method takes four argument, for the posX, posY, width and height
+Each method takes four to five argument, for the filter, posX, posY, width and height
 and returns a single boolean indicating whether such a window was found or not.
 Strings are matched case-sensitively.
 
