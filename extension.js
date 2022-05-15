@@ -16,9 +16,16 @@
 
 const { Gio } = imports.gi;
 
-const ResizeWindowByTitleInterface = `
+const ResizeWindowInterface = `
 <node>
-  <interface name="de.jerolimov.ResizeWindowByTitle">
+  <interface name="de.jerolimov.ResizeWindow">
+    <method name="resizeActive">
+      <arg name="posX" type="i" direction="in" />
+      <arg name="posY" type="i" direction="in" />
+      <arg name="width" type="i" direction="in" />
+      <arg name="height" type="i" direction="in" />
+      <arg name="found" type="b" direction="out" />
+    </method>
     <method name="resizeByTitle">
       <arg name="fullTitle" type="s" direction="in" />
       <arg name="posX" type="i" direction="in" />
@@ -71,17 +78,17 @@ const ResizeWindowByTitleInterface = `
 </node>
 `;
 
-class ResizeWindowByTitle {
+class ResizeWindow {
     #dbus;
 
     enable() {
         this.#dbus = Gio.DBusExportedObject.wrapJSObject(
-            ResizeWindowByTitleInterface,
+            ResizeWindowInterface,
             this,
         );
         this.#dbus.export(
             Gio.DBus.session,
-            '/de/jerolimov/ResizeWindowByTitle',
+            '/de/jerolimov/ResizeWindow',
         );
     }
 
@@ -106,6 +113,13 @@ class ResizeWindowByTitle {
     #resizeByTitlePredicate(predicate, posX, posY, width, height) {
         return this.#resizeByPredicate(
             (window) => predicate(window.get_title()),
+            posX, posY, width, height
+        );
+    }
+
+    resizeActive(posX, posY, width, height) {
+        return this.#resizeByPredicate(
+            (window) => window.has_focus(),
             posX, posY, width, height
         );
     }
@@ -157,5 +171,5 @@ class ResizeWindowByTitle {
 }
 
 function init() {
-    return new ResizeWindowByTitle();
+    return new ResizeWindow();
 }

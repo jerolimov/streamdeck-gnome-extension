@@ -1,9 +1,9 @@
-# Resize windows by title
+# Resize windows
 
 Origin extension was developed by [Lucas Werkmeister](https://github.com/lucaswerkmeister)
 to [activate a window by title](https://github.com/lucaswerkmeister/activate-window-by-title) from the commandline (via D-Bus).
 
-~~~
+---
 
 This is a GNOME Shell extension to resize (focus, bring to the foreground) a window
 based on its title (or `WM_CLASS`, see below).
@@ -14,9 +14,10 @@ but can be called from the command line or other programs.
 ## D-Bus usage
 
 The extension, when resized, extends the `org.gnome.Shell` service on the session bus
-with a `/de/jerolimov/ResizeWindowByTitle` object,
-which implements the `de.jerolimov.ResizeWindowByTitle` interface containing the following methods:
+with a `/de/jerolimov/ResizeWindow` object,
+which implements the `de.jerolimov.ResizeWindow` interface containing the following methods:
 
+- **resizeActive**, to resize the active (focused) window
 - **resizeByTitle**, to resize the window with the given full, exact title
 - **resizeByPrefix**, to resize the window whose title starts with the given prefix
 - **resizeBySuffix**, to resize the window whose title ends with the given suffix
@@ -24,7 +25,7 @@ which implements the `de.jerolimov.ResizeWindowByTitle` interface containing the
 - **resizeByWmClass**, to resize the window with the given full, exact name part of its `WM_CLASS`
 - **resizeByWmClassInstance**, to resize the window with the given full, exact instance part of its `WM_CLASS`
 
-Each method takes a single string argument,
+Each method takes four argument, for the posX, posY, width and height
 and returns a single boolean indicating whether such a window was found or not.
 Strings are matched case-sensitively.
 
@@ -47,24 +48,23 @@ global.get_window_actors().map(a => a.get_meta_window()).map(w => `${w.get_wm_cl
 You can call these methods using your favorite D-Bus command line tool, for example:
 
 ```sh
-busctl --user call \
-    org.gnome.Shell \
-    /de/jerolimov/ResizeWindowByTitle \
-    de.jerolimov.ResizeWindowByTitle \
-    resizeBySubstring \
-    s 'Firefox' \
-    i 100 \
-    i 100 \
-    i 1920 \
-    i 1080
+gdbus call --session \
+    --dest org.gnome.Shell \
+    --object-path /de/jerolimov/ResizeWindow \
+    --method de.jerolimov.ResizeWindow.resizeBySubstring \
+    'Firefox' \
+    100 \
+    100 \
+    1920 \
+    1080
 ```
 
 ```sh
+sleep 2; \
 gdbus call --session \
     --dest org.gnome.Shell \
-    --object-path /de/jerolimov/ResizeWindowByTitle \
-    --method de.jerolimov.ResizeWindowByTitle.resizeBySubstring \
-    'Firefox' \
+    --object-path /de/jerolimov/ResizeWindow \
+    --method de.jerolimov.ResizeWindow.resizeActive \
     100 \
     100 \
     1920 \
