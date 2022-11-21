@@ -4,7 +4,7 @@ build:
 	gnome-extensions pack --force
 
 install:
-	gnome-extensions install "streamdeck-gnome-extension@jerolimov.de.shell-extension.zip"
+	gnome-extensions install --force "streamdeck-gnome-extension@jerolimov.de.shell-extension.zip"
 
 copy:
 	mkdir -pv "${HOME}/.local/share/gnome-shell/extensions/streamdeck-gnome-extension@jerolimov.de/"
@@ -15,3 +15,6 @@ enable:
 
 disable:
 	gnome-extensions enable "streamdeck-gnome-extension@jerolimov.de"
+
+uninstall:
+	gnome-extensions uninstall "streamdeck-gnome-extension@jerolimov.de.shell-extension.zip"
