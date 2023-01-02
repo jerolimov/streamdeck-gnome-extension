@@ -14,7 +14,7 @@ enable:
 	gnome-extensions enable "streamdeck-gnome-extension@jerolimov.de"
 
 disable:
-	gnome-extensions enable "streamdeck-gnome-extension@jerolimov.de"
+	gnome-extensions disable "streamdeck-gnome-extension@jerolimov.de"
 
 uninstall:
 	gnome-extensions uninstall "streamdeck-gnome-extension@jerolimov.de.shell-extension.zip"
