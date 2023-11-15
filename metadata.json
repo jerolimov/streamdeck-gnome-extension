@@ -2,11 +2,9 @@
   "uuid": "streamdeck-gnome-extension@jerolimov.de",
   "name": "Stream Deck Gnome Extension",
   "description": "Expose a D-Bus interface to activate a window by its title or WM_CLASS",
-  "version": 2,
+  "version": 3,
   "shell-version": [
-    "42",
-    "43",
-    "44"
+    "45"
   ],
   "url": "https://github.com/jerolimov/streamdeck-gnome-extension"
 }

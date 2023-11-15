@@ -12,9 +12,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* exported init */
-
-const { Gio } = imports.gi;
+import Gio from 'gi://Gio';
 
 const ResizeWindowInterface = `
 <node>
@@ -78,7 +76,7 @@ const ResizeWindowInterface = `
 </node>
 `;
 
-class ResizeWindow {
+export default class ResizeWindow {
     #dbus;
 
     enable() {
@@ -168,8 +166,4 @@ class ResizeWindow {
             posX, posY, width, height
         );
     }
-}
-
-function init() {
-    return new ResizeWindow();
 }

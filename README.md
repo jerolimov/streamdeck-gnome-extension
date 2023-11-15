@@ -1,15 +1,17 @@
-# 🚧 WIP Resize windows 🚧
+# Gnome extension to resize windows via DBUS / cli
 
-Origin extension was developed by [Lucas Werkmeister](https://github.com/lucaswerkmeister)
-to [activate a window by title](https://github.com/lucaswerkmeister/activate-window-by-title) from the commandline (via D-Bus).
+Origin extension was developed by [Lucas Werkmeister](https://github.com/lucaswerkmeister) to [activate a window by title](https://github.com/lucaswerkmeister/activate-window-by-title) from the commandline (via D-Bus).
 
 ---
 
-This is a GNOME Shell extension to resize (focus, bring to the foreground) a window
+This GNOME Shell extension allow you to to resize (focus, bring to the foreground) a window
 based on its title (or `WM_CLASS`, see below).
-It exposes a D-Bus interface with methods for this purpose;
-it has no user interface of its own,
+It exposes a D-Bus interface with multiple functions and has no user interface of its own
 but can be called from the command line or other programs.
+
+The `main` branch works / should work with Gnome 45+
+
+For Gnome 42-44 checkout the branch `gnome-44`.
 
 ## D-Bus usage
 
